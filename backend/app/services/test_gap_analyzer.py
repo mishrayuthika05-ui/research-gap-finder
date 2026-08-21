@@ -1,0 +1,71 @@
+from backend.app.services.gap_analyzer import compare_papers
+
+
+paper_analyses = [
+
+    """
+    Research Problem:
+    Detecting misinformation on social media.
+
+    Main Methodology:
+    Machine learning classification using English-language
+    Twitter posts.
+
+    Key Findings:
+    The model achieved good classification performance.
+
+    Limitations:
+    The dataset contains only English-language posts.
+    The study focuses only on Twitter.
+
+    Future Work:
+    Evaluate the model on multilingual datasets and other
+    social media platforms.
+    """,
+
+    """
+    Research Problem:
+    Detecting misinformation using deep learning.
+
+    Main Methodology:
+    A transformer-based model trained on multilingual data.
+
+    Key Findings:
+    The model performs well on multilingual misinformation.
+
+    Limitations:
+    The experiments were performed mainly on static datasets.
+    Real-time detection was not evaluated.
+
+    Future Work:
+    Investigate real-time misinformation detection.
+    """,
+
+    """
+    Research Problem:
+    Real-time misinformation detection.
+
+    Main Methodology:
+    Deep learning model evaluated on social media streams.
+
+    Key Findings:
+    The model can detect misinformation quickly.
+
+    Limitations:
+    The dataset contains limited languages and platforms.
+
+    Future Work:
+    Evaluate the approach across more languages and social
+    media platforms.
+    """
+]
+
+
+result = compare_papers(paper_analyses)
+
+
+print("\nCross-Paper Analysis")
+print("=" * 60)
+print("RESULT TYPE:", type(result))
+print("RESULT LENGTH:", len(result) if result else 0)
+print("RESULT:", repr(result))
