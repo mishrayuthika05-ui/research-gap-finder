@@ -3,18 +3,19 @@ import numpy as np
 
 
 class VectorStore:
+
     def __init__(self, dimension: int = 384):
         self.index = faiss.IndexFlatIP(dimension)
         self.texts = []
 
     def add_embeddings(self, embeddings, texts):
+
         embeddings = np.asarray(
             embeddings,
             dtype="float32"
         )
 
         self.index.add(embeddings)
-
         self.texts.extend(texts)
 
     def search(self, query_embedding, top_k: int = 3):
