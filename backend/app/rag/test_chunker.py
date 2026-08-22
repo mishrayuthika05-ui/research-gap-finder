@@ -1,18 +1,24 @@
+from backend.app.utils.pdf_processor import extract_text_from_pdf
 from backend.app.rag.chunker import chunk_text
 
 
-text = """
-Research papers are an important source of scientific knowledge.
-Machine learning is widely used in research.
-Researchers often identify limitations and future research directions.
-A research gap represents an area that has not been sufficiently explored.
-"""
+pdf_path = "data/papers/paper1.pdf"
 
 
+# Extract text from PDF
+text = extract_text_from_pdf(pdf_path)
+
+print("Total characters:", len(text))
+
+
+# Split extracted text into chunks
 chunks = chunk_text(text)
 
 print("Number of chunks:", len(chunks))
 
-for i, chunk in enumerate(chunks, start=1):
+
+# Show first 3 chunks
+for i, chunk in enumerate(chunks[:3], start=1):
+
     print(f"\n--- Chunk {i} ---")
     print(chunk)
