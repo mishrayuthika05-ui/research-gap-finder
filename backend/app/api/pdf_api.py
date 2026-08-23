@@ -16,10 +16,6 @@ from backend.app.llm.groq_client import generate_answer
 router = APIRouter()
 
 
-# ============================================================
-# SINGLE PDF UPLOAD
-# ============================================================
-
 @router.post("/upload-pdf")
 async def upload_pdf(
     file: UploadFile = File(...)
@@ -34,7 +30,6 @@ async def upload_pdf(
     temp_file_path = None
 
     try:
-
         file_content = await file.read()
 
         with tempfile.NamedTemporaryFile(
@@ -45,70 +40,39 @@ async def upload_pdf(
             temp_file.write(file_content)
             temp_file_path = temp_file.name
 
-        text = extract_text_from_pdf(
-            temp_file_path
-        )
-
+        text = extract_text_from_pdf(temp_file_path)
         chunks = chunk_text(text)
 
         return {
             "filename": file.filename,
             "characters": len(text),
             "number_of_chunks": len(chunks),
-            "first_chunk_preview": (
-                chunks[0]
-                if chunks
-                else ""
-            )
+            "first_chunk_preview": chunks[0] if chunks else ""
         }
 
     except Exception as e:
-
         raise HTTPException(
             status_code=500,
             detail=f"PDF processing failed: {str(e)}"
         )
 
     finally:
-
-        if (
-            temp_file_path
-            and os.path.exists(temp_file_path)
-        ):
+        if temp_file_path and os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
 
-# ============================================================
-# MULTIPLE PDF RESEARCH GAP ANALYSIS
-# ============================================================
-
 @router.post("/analyze-papers")
 async def analyze_papers(
-    files: list[UploadFile] = File(
-        ...,
-        description="Upload 2 or more research paper PDF files"
-    )
+    paper1: UploadFile = File(...),
+    paper2: UploadFile = File(...),
+    paper3: UploadFile = File(...)
 ):
 
-    # --------------------------------------------------------
-    # CHECK NUMBER OF FILES
-    # --------------------------------------------------------
-
-    if len(files) < 2:
-
-        raise HTTPException(
-            status_code=400,
-            detail="At least two PDF files are required."
-        )
-
-    # --------------------------------------------------------
-    # CHECK FILE TYPES
-    # --------------------------------------------------------
+    files = [paper1, paper2, paper3]
 
     for file in files:
 
         if not file.filename.lower().endswith(".pdf"):
-
             raise HTTPException(
                 status_code=400,
                 detail=f"{file.filename} is not a PDF file."
@@ -118,14 +82,7 @@ async def analyze_papers(
 
     try:
 
-        # ====================================================
-        # PROCESS EACH PAPER
-        # ====================================================
-
-        for paper_number, file in enumerate(
-            files,
-            start=1
-        ):
+        for paper_number, file in enumerate(files, start=1):
 
             print("\n")
             print("=" * 60)
@@ -139,10 +96,6 @@ async def analyze_papers(
 
             try:
 
-                # --------------------------------------------
-                # READ PDF
-                # --------------------------------------------
-
                 file_content = await file.read()
 
                 with tempfile.NamedTemporaryFile(
@@ -151,68 +104,32 @@ async def analyze_papers(
                 ) as temp_file:
 
                     temp_file.write(file_content)
-
                     temp_file_path = temp_file.name
-
-                # --------------------------------------------
-                # EXTRACT TEXT
-                # --------------------------------------------
 
                 text = extract_text_from_pdf(
                     temp_file_path
                 )
 
-                print(
-                    "Characters:",
-                    len(text)
-                )
-
-                # --------------------------------------------
-                # CHUNK TEXT
-                # --------------------------------------------
+                print("Characters:", len(text))
 
                 chunks = chunk_text(text)
 
-                print(
-                    "Chunks:",
-                    len(chunks)
-                )
+                print("Chunks:", len(chunks))
 
                 if not chunks:
-
                     continue
 
-                # --------------------------------------------
-                # CREATE RETRIEVER
-                # --------------------------------------------
-
-                retriever = Retriever(
-                    chunks
-                )
-
-                # --------------------------------------------
-                # RESEARCH QUERIES
-                # --------------------------------------------
+                retriever = Retriever(chunks)
 
                 queries = [
-
                     "research problem and objectives",
-
                     "methodology and experimental approach",
-
                     "key findings and results",
-
                     "limitations of the study",
-
                     "future work and research directions"
-
                 ]
 
                 retrieved_chunks = []
-
-                # --------------------------------------------
-                # RETRIEVE RELEVANT CHUNKS
-                # --------------------------------------------
 
                 for query in queries:
 
@@ -223,10 +140,7 @@ async def analyze_papers(
 
                     for result in results:
 
-                        if (
-                            result["text"]
-                            not in retrieved_chunks
-                        ):
+                        if result["text"] not in retrieved_chunks:
 
                             retrieved_chunks.append(
                                 result["text"]
@@ -237,10 +151,6 @@ async def analyze_papers(
                     len(retrieved_chunks)
                 )
 
-                # --------------------------------------------
-                # PREPARE TEXT
-                # --------------------------------------------
-
                 selected_text = "\n\n".join(
                     retrieved_chunks
                 )
@@ -250,29 +160,16 @@ async def analyze_papers(
                     len(selected_text)
                 )
 
-                # --------------------------------------------
-                # LLM ANALYSIS
-                # --------------------------------------------
-
-                print(
-                    "Sending relevant chunks to LLM..."
-                )
+                print("Sending relevant chunks to LLM...")
 
                 analysis = analyze_paper(
                     selected_text
                 )
 
                 analyses.append({
-
                     "filename": file.filename,
-
                     "analysis": analysis
-
                 })
-
-                print(
-                    f"Paper {paper_number} analysis complete."
-                )
 
             finally:
 
@@ -280,28 +177,13 @@ async def analyze_papers(
                     temp_file_path
                     and os.path.exists(temp_file_path)
                 ):
-
-                    os.remove(
-                        temp_file_path
-                    )
-
-        # ====================================================
-        # CHECK ANALYSES
-        # ====================================================
+                    os.remove(temp_file_path)
 
         if len(analyses) < 2:
-
             raise HTTPException(
                 status_code=400,
-                detail=(
-                    "At least two papers must "
-                    "contain readable text."
-                )
+                detail="At least two papers must contain readable text."
             )
-
-        # ====================================================
-        # CROSS-PAPER ANALYSIS
-        # ====================================================
 
         print("\n")
         print("=" * 60)
@@ -309,25 +191,13 @@ async def analyze_papers(
         print("=" * 60)
 
         analysis_texts = [
-
             item["analysis"]
-
             for item in analyses
-
         ]
 
         comparison = compare_papers(
             analysis_texts
         )
-
-        # ====================================================
-        # CANDIDATE RESEARCH GAP
-        # ====================================================
-
-        print("\n")
-        print("=" * 60)
-        print("CANDIDATE RESEARCH GAP")
-        print("=" * 60)
 
         gap_prompt = f"""
 From the following cross-paper analysis,
@@ -342,15 +212,16 @@ Cross-Paper Analysis:
 {comparison}
 """
 
+        print("\n")
+        print("=" * 60)
+        print("CANDIDATE RESEARCH GAP")
+        print("=" * 60)
+
         candidate_gap = generate_answer(
             gap_prompt
         )
 
         print(candidate_gap)
-
-        # ====================================================
-        # GAP SCORE
-        # ====================================================
 
         print("\n")
         print("=" * 60)
@@ -364,10 +235,6 @@ Cross-Paper Analysis:
 
         print(gap_score)
 
-        # ====================================================
-        # EVIDENCE MAPPING
-        # ====================================================
-
         print("\n")
         print("=" * 60)
         print("EVIDENCE MAPPING")
@@ -380,36 +247,21 @@ Cross-Paper Analysis:
 
         print(evidence)
 
-        # ====================================================
-        # FINAL RESPONSE
-        # ====================================================
-
         return {
-
             "papers_analyzed": len(analyses),
-
             "paper_analyses": analyses,
-
             "cross_paper_analysis": comparison,
-
             "research_gap": candidate_gap,
-
             "gap_score": gap_score,
-
             "evidence": evidence
-
         }
 
     except HTTPException:
-
         raise
 
     except Exception as e:
 
         raise HTTPException(
             status_code=500,
-            detail=(
-                "Research gap analysis failed: "
-                f"{str(e)}"
-            )
+            detail=f"Research gap analysis failed: {str(e)}"
         )

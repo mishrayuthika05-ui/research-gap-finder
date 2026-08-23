@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Research Gap Finder</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Research Gap Finder</h1>
+        <p>AI-Powered Research Paper Analysis</p>
+    </header>
+
+    <main>
+
+        <section class="upload-section">
+
+            <h2>Upload Research Papers</h2>
+
+            <p>
+                Upload three research papers to identify
+                potential research gaps.
+            </p>
+
+            <div class="papers">
+
+                <div>
+                    <label for="paper1">Paper 1</label>
+                    <input
+                        type="file"
+                        id="paper1"
+                        accept=".pdf"
+                    >
+                </div>
+
+                <div>
+                    <label for="paper2">Paper 2</label>
+                    <input
+                        type="file"
+                        id="paper2"
+                        accept=".pdf"
+                    >
+                </div>
+
+                <div>
+                    <label for="paper3">Paper 3</label>
+                    <input
+                        type="file"
+                        id="paper3"
+                        accept=".pdf"
+                    >
+                </div>
+
+            </div>
+
+            <button id="analyzeButton">
+                Analyze Papers
+            </button>
+
+            <p id="loading" hidden>
+                Analyzing papers... Please wait.
+            </p>
+
+            <p id="error" hidden></p>
+
+        </section>
+
+
+        <section id="results" hidden>
+
+            <h2>Research Gap</h2>
+
+            <div id="researchGap"></div>
+
+
+            <h2>Gap Score</h2>
+
+            <div id="gapScore"></div>
+
+
+            <h2>Cross-Paper Analysis</h2>
+
+            <div id="comparison"></div>
+
+
+            <h2>Evidence</h2>
+
+            <div id="evidence"></div>
+
+
+            <h2>Individual Paper Analysis</h2>
+
+            <div id="paperAnalyses"></div>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
