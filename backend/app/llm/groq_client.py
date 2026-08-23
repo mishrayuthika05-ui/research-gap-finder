@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from groq import Groq
 
 
-# Load environment variables from .env
+# Load environment variables
 load_dotenv()
 
 
@@ -23,19 +23,47 @@ client = Groq(api_key=api_key)
 
 def generate_answer(prompt: str) -> str:
     """
-    Send a prompt to the Groq LLM and return the generated answer.
+    Send a prompt to the Groq LLM and return
+    a stable generated answer.
     """
 
-    response = client.chat.completions.create(
-        model="openai/gpt-oss-20b",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0.2,
-        max_tokens=500
-    )
+    try:
 
-    return response.choices[0].message.content
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-20b",
+
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a careful research analysis assistant. "
+                        "Use only the information provided in the prompt. "
+                        "Do not invent facts or evidence. "
+                        "Give consistent and concise answers."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+
+            # Lower temperature = more consistent output
+            temperature=0.0,
+
+            # Allow enough space for research analysis
+            max_tokens=1200
+        )
+
+        answer = response.choices[0].message.content
+
+        if not answer:
+            return ""
+
+        return answer.strip()
+
+    except Exception as e:
+
+        print("LLM Error:", str(e))
+
+        return ""
