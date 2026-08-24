@@ -16,21 +16,29 @@
         <p>AI-Powered Research Paper Analysis</p>
     </header>
 
+
     <main>
+
+        <!-- =========================
+             UPLOAD SECTION
+        ========================== -->
 
         <section class="upload-section">
 
             <h2>Upload Research Papers</h2>
 
-            <p>
-                Upload three research papers to identify
-                potential research gaps.
+            <p class="description">
+                Upload research papers and let AI analyze their
+                findings, limitations, and future directions to
+                identify potential research gaps.
             </p>
+
 
             <div class="papers">
 
-                <div>
+                <div class="paper-input">
                     <label for="paper1">Paper 1</label>
+
                     <input
                         type="file"
                         id="paper1"
@@ -38,8 +46,10 @@
                     >
                 </div>
 
-                <div>
+
+                <div class="paper-input">
                     <label for="paper2">Paper 2</label>
+
                     <input
                         type="file"
                         id="paper2"
@@ -47,8 +57,10 @@
                     >
                 </div>
 
-                <div>
+
+                <div class="paper-input">
                     <label for="paper3">Paper 3</label>
+
                     <input
                         type="file"
                         id="paper3"
@@ -58,48 +70,104 @@
 
             </div>
 
+
             <button id="analyzeButton">
                 Analyze Papers
             </button>
 
+
             <p id="loading" hidden>
                 Analyzing papers... Please wait.
             </p>
+
 
             <p id="error" hidden></p>
 
         </section>
 
 
+
+        <!-- =========================
+             RESULTS
+        ========================== -->
+
         <section id="results" hidden>
 
-            <h2>Research Gap</h2>
+            <!-- Research Gap -->
 
-            <div id="researchGap"></div>
+            <div class="result-card highlight">
 
+                <h2>Research Gap</h2>
 
-            <h2>Gap Score</h2>
+                <div id="researchGap">
+                </div>
 
-            <div id="gapScore"></div>
-
-
-            <h2>Cross-Paper Analysis</h2>
-
-            <div id="comparison"></div>
+            </div>
 
 
-            <h2>Evidence</h2>
 
-            <div id="evidence"></div>
+            <!-- Gap Score -->
+
+            <div class="result-card">
+
+                <h2>Gap Score</h2>
+
+                <div id="gapScore">
+                </div>
+
+            </div>
 
 
-            <h2>Individual Paper Analysis</h2>
 
-            <div id="paperAnalyses"></div>
+            <!-- Cross Paper Analysis -->
+
+            <div class="result-card">
+
+                <h2>Cross-Paper Analysis</h2>
+
+                <div id="comparison">
+                </div>
+
+            </div>
+
+
+
+            <!-- Evidence -->
+
+            <div class="result-card">
+
+                <h2>Evidence Mapping</h2>
+
+                <div id="evidence">
+                </div>
+
+            </div>
+
+
+
+            <!-- Individual Paper Analysis -->
+
+            <div class="result-card">
+
+                <h2>Individual Paper Analysis</h2>
+
+                <div id="paperAnalyses">
+                </div>
+
+            </div>
 
         </section>
 
     </main>
+
+
+    <footer>
+
+        <p>
+            Research Gap Finder • AI-assisted research analysis
+        </p>
+
+    </footer>
 
 
     <script src="script.js"></script>
