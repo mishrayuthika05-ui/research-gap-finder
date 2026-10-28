@@ -130,7 +130,7 @@ Start the FastAPI application using the entry point configured in your repositor
 For example, if your application entry point is `backend.main:app`, run:
 
 ```bash
-uvicorn backend.main:app --reload
+python -m uvicorn backend.app.main:app --reload
 ```
 
 If your entry point is different, replace `backend.main:app` with the correct Python module and FastAPI application variable.
